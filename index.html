@@ -36,7 +36,7 @@
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, addDoc} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, addDoc, orderBy, query} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         // TODO: Add SDKs for Firebase products that you want to use
         // https://firebase.google.com/docs/web/setup#available-libraries
         // Your web app's Firebase configuration
@@ -59,7 +59,8 @@
         // Initialize Cloud Firestore and get a reference to the service
         const db = getFirestore(app); //db will hold the connection in the firebase database.
 
-        onSnapshot(collection(db, "students"), snapshot => { //when firebase database have modif or changes it will change realtime.
+        onSnapshot(query(collection(db, "students"), orderBy("lastname", "asc")), snapshot => 
+        { //when firebase database have modif or changes it will change realtime.
             document.querySelector("#tableArea").innerHTML = "";
             snapshot.forEach(student => {   //snapshot means get a copy on the database it can listen and check for changes and it willl update on the frontend.
                 let studentRow = 
@@ -74,21 +75,21 @@
         });
 
         document.querySelector('#newStudentForm').addEventListener("click", () =>{
-            const firstname = document.querySelector('#firstname').value;
-            const lastname = document.querySelector('#lastname').value;
-            const batch = document.querySelector('#batch').value;
-            const grade = document.querySelector('#grade').value;
-
-
         // //insert into firestore DB
         // Add a new document with a generated id.
         addDoc(collection(db, "students"), {
-            firstname: firstname,
-            lastname: lastname,
-            batch: batch,
-            grade: grade
+             //store values;
+            firstname: document.querySelector('#firstname').value,    
+            lastname: document.querySelector('#lastname').value,
+            batch: document.querySelector('#batch').value,
+            grade: document.querySelector('#grade').value
         });
         alert('Student Added!');
+        //Clear Values after adding records
+        document.querySelector('#firstname').value = "";
+        lastname: document.querySelector('#lastname').value = "";
+        document.querySelector('#batch').value = "";
+        document.querySelector('#grade').value = "";
     });
 
         
